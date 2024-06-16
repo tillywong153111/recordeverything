@@ -1,0 +1,9 @@
+# Each route describes how an incoming URL will be processed by Platform.sh.
+
+"https://{default}/":  # 定义了一个路由，匹配任何到达 "https://{default}/" 的请求
+    type: upstream  # 这个路由将请求转发到一个上游应用
+    upstream: "ll_project:http"  # 请求被转发到名为 "ll_project" 的应用的 "http" 端口
+
+"https://www.{default}/":  # 定义了一个路由，匹配任何到达 "https://www.{default}/" 的请求
+    type: redirect  # 这个路由将请求重定向到另一个 URL
+    to: "https://{default}/"  # 请求被重定向到 "https://{default}/"
