@@ -8,6 +8,8 @@ Created on Sun Jun  9 17:04:08 2024
 from django import forms
 
 from .models import Topic,Entry
+from .models import TodoItem
+
 
 class TopicForm(forms.ModelForm):
     class Meta:
@@ -21,3 +23,9 @@ class EntryForm(forms.ModelForm):
         fields = ['text']
         labels = {'text':''}
         widgets = {'text':forms.Textarea(attrs={'cols':80})}
+
+#待办事项
+class TodoItemForm(forms.ModelForm):
+    class Meta:
+        model = TodoItem
+        fields = ['content']

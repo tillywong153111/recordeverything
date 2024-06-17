@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-mibxt7sboxg%r)9t6z=a6@weyo(thgbknfcwgyowgx9$5s4&=!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS =ALLOWED_HOSTS = ['recordeverything-production.up.railway.app']
+ALLOWED_HOSTS =ALLOWED_HOSTS = ['recordeverything-production.up.railway.app','127.0.0.1', 'localhost']
 
 # Application definition
 

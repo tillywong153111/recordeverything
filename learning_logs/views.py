@@ -1,15 +1,16 @@
 from django.shortcuts import render, redirect  # 从 django.shortcuts 模块中导入 render 和 redirect 函数
 from django.contrib.auth.decorators import login_required
-from .models import Topic, Entry  # 从当前目录的 models.py 文件中导入 Topic 类
-from .forms import TopicForm, EntryForm  # 从当前目录的 forms.py 文件中导入 TopicForm 类
+from .models import Topic, Entry, TodoItem  # 从当前目录的 models.py 文件中导入 Topic 类
+from .forms import TopicForm, EntryForm, TodoItemForm  # 从当前目录的 forms.py 文件中导入 TopicForm 类
 from django.http import Http404
 
 
+def index(request):
+    """显示主页"""
+    todo_items = TodoItem.objects.filter(owner=request.user)
+    context = {'todo_items': todo_items}
+    return render(request, 'learning_logs/index.html', context)
 
-
-def index(request):  # 定义 index 视图函数，该函数处理对应的 HTTP 请求
-    """学习笔记的主页"""
-    return render(request, 'learning_logs/index.html')  # 返回一个渲染后的 HTML 页面
 
 @login_required
 def topics(request):  # 定义 topics 视图函数，该函数处理对应的 HTTP 请求
@@ -96,3 +97,42 @@ def edit_entry(request, entry_id):
     return render(request,'learning_logs/edit_entry.html',context)
 
 
+@login_required
+def home(request):
+    todo_items = TodoItem.objects.filter(owner=request.user)
+    return render(request, 'home.html', {'todo_items': todo_items})
+
+
+#待办事项相关
+@login_required
+def create_todo(request):
+    if request.method == 'POST':
+        form = TodoItemForm(request.POST)
+        if form.is_valid():
+            new_todo = form.save(commit=False)
+            new_todo.owner = request.user
+            new_todo.save()
+            return redirect('learning_logs:index')
+
+    else:
+        form = TodoItemForm()
+    return render(request, 'learning_logs/create_todo.html', {'form': form})
+
+
+
+def update_todo(request, todo_id):
+    todo = TodoItem.objects.get(id=todo_id)
+    if request.method == 'POST':
+        form = TodoItemForm(request.POST, instance=todo)
+        if form.is_valid():
+            form.save()
+            return redirect('learning_logs:index')
+
+    else:
+        form = TodoItemForm(instance=todo)
+    return render(request, 'learning_logs/update_todo.html', {'form': form})
+
+def delete_todo(request, todo_id):
+    todo = TodoItem.objects.get(id=todo_id)
+    todo.delete()
+    return redirect('learning_logs:index')

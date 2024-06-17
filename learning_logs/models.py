@@ -41,3 +41,10 @@ class Entry(models.Model):
             return f"{self.text[:50]}..."
         else:
             return self.text
+        
+#待办事项模型   
+class TodoItem(models.Model):
+    content = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+

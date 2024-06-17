@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jun  3 13:44:41 2024
-
-@author: MSI
-"""
-
 """定义learning_logs的URL模式"""
 
 from django.urls import path
@@ -30,4 +23,9 @@ urlpatterns = [
     
     #用于编辑条目的页面
     path('edit_entry/<int:entry_id>',views.edit_entry,name='edit_entry'), 
+    
+    #待办事项相关
+    path('create_todo/', views.create_todo, name='create_todo'),
+    path('update_todo/<int:todo_id>/', views.update_todo, name='update_todo'),
+    path('delete_todo/<int:todo_id>/', views.delete_todo, name='delete_todo'),
 ]
