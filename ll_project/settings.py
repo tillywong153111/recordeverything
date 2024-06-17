@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-mibxt7sboxg%r)9t6z=a6@weyo(thgbknfcwgyowgx9$5s4&=!
 DEBUG = True
 
 ALLOWED_HOSTS = ['recordeverything-production.up.railway.app', '127.0.0.1', 'localhost']
-CSRF_TRUSTED_ORIGINS = ['recordeverything-production.up.railway.app', '127.0.0.1', 'localhost']
+CSRF_TRUSTED_ORIGINS = ['https://recordeverything-production.up.railway.app', 'http://127.0.0.1', 'http://localhost']
 CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SECURE = False
 
