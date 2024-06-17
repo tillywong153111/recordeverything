@@ -7,9 +7,13 @@ from django.http import Http404
 
 def index(request):
     """显示主页"""
-    todo_items = TodoItem.objects.filter(owner=request.user)
-    context = {'todo_items': todo_items}
+    if request.user.is_authenticated:
+        todo_items = TodoItem.objects.filter(owner=request.user)
+        context = {'todo_items': todo_items}
+    else:
+        context = {}
     return render(request, 'learning_logs/index.html', context)
+
 
 
 @login_required
@@ -117,8 +121,6 @@ def create_todo(request):
     else:
         form = TodoItemForm()
     return render(request, 'learning_logs/create_todo.html', {'form': form})
-
-
 
 def update_todo(request, todo_id):
     todo = TodoItem.objects.get(id=todo_id)
