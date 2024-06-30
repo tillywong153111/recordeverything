@@ -20,7 +20,7 @@ def index(request):
 
 
 def home(request):
-    github_url = "https://raw.githubusercontent.com/你的用户名/你的仓库名/main/README.md"  # 这里替换成你的实际GitHub路径
+    github_url = "https://github.com/tillywong153111/recordeverything/blob/master/%E5%BE%85%E5%8A%9E%E4%BA%8B%E9%A1%B9.md"  # 这里替换成你的实际GitHub路径
     response = requests.get(github_url)
 
     if response.status_code == 200:
