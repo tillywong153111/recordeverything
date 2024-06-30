@@ -7,3 +7,4 @@ typing_extensions==4.12.1
 tzdata==2024.1
 gunicorn
 requests==2.31.0  # 新增这一行
+markdown2==2.4.0  # 确保添加这一行
