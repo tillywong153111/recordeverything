@@ -1,83 +1,63 @@
-from django.shortcuts import render, redirect  # 从 django.shortcuts 模块中导入 render 和 redirect 函数
+from django.shortcuts import render, redirect 
 from django.contrib.auth.decorators import login_required
-from .models import Topic, Entry, TodoItem  # 从当前目录的 models.py 文件中导入 Topic 类
-from .forms import TopicForm, EntryForm, TodoItemForm  # 从当前目录的 forms.py 文件中导入 TopicForm 类
+from .models import Topic, Entry, TodoItem 
+from .forms import TopicForm, EntryForm, TodoItemForm  
 from django.http import Http404
 import requests
-from django.shortcuts import render
 from markdown2 import markdown
-
-
 
 def index(request):
     """显示主页"""
-    if request.user.is_authenticated:
-        todo_items = TodoItem.objects.filter(owner=request.user)
-        context = {'todo_items': todo_items}
-    else:
-        context = {}
-    return render(request, 'learning_logs/index.html', context)
-
-
-def home(request):
-    github_url = "https://github.com/tillywong153111/recordeverything/blob/master/%E5%BE%85%E5%8A%9E%E4%BA%8B%E9%A1%B9.md"  # 这里替换成你的实际GitHub路径
+    github_url = "https://raw.githubusercontent.com/tillywong153111/recordeverything/master/daibanshixiang.md"  # 这里替换成你的实际GitHub路径
     response = requests.get(github_url)
-
+    
     if response.status_code == 200:
         md_content = response.text
         html_content = markdown(md_content)
     else:
         html_content = "<p>无法加载数据，请稍后再试。</p>"
-
-    context = {
-        'content': html_content
-    }
-    return render(request, 'learning_logs/home.html', context)
-
-
-
+    
+    if request.user.is_authenticated:
+        todo_items = TodoItem.objects.filter(owner=request.user)
+        context = {'todo_items': todo_items, 'content': html_content}
+    else:
+        context = {'content': html_content}
+        
+    return render(request, 'learning_logs/index.html', context)
 
 @login_required
-def topics(request):  # 定义 topics 视图函数，该函数处理对应的 HTTP 请求
+def topics(request):
     """显示所有主题"""
-    #topics = Topic.objects.order_by('date_added')  # 从数据库中获取所有 Topic 对象，并按 date_added 字段排序
-    topics = Topic.objects.filter(owner=(request.user)).order_by('date_added')
-    context = {'topics': topics}  # 创建一个字典，用于传递给模板
-    return render(request, 'learning_logs/topics.html', context)  # 返回一个渲染后的 HTML 页面，该页面显示所有的主题
+    topics = Topic.objects.filter(owner=request.user).order_by('date_added')
+    context = {'topics': topics}
+    return render(request, 'learning_logs/topics.html', context)
 
 @login_required
-def topic(request, topic_id):  # 定义 topic 视图函数，该函数处理对应的 HTTP 请求
+def topic(request, topic_id):
     """显示单个主题及其所有的条目"""
-    topic = Topic.objects.get(id=topic_id)  # 从数据库中获取给定 id 的 Topic 对象
-    #确认请求的主题属于当前用户
+    topic = Topic.objects.get(id=topic_id)
     if topic.owner != request.user:
         raise Http404
-        
-    entries = topic.entry_set.order_by("-date_added")  # 获取该主题下的所有条目，并按 date_added 字段逆序排序
-    context = {'topic': topic, 'entries': entries}  # 创建一个字典，用于传递给模板
-    return render(request, 'learning_logs/topic.html', context)  # 返回一个渲染后的 HTML 页面，该页面显示单个主题及其所有的条目
-
-
-
+    
+    entries = topic.entry_set.order_by("-date_added")
+    context = {'topic': topic, 'entries': entries}
+    return render(request, 'learning_logs/topic.html', context)
 
 @login_required
-def new_topic(request):  # 定义 new_topic 视图函数，该函数处理对应的 HTTP 请求
+def new_topic(request):
     """添加新主题"""
-    if request.method != 'POST':  # 如果 HTTP 请求的方法不是 POST，则创建一个新表单
-        form = TopicForm()  # 创建一个空的 TopicForm 对象
-    else:  # 如果 HTTP 请求的方法是 POST，则处理提交的数据
-        form = TopicForm(data=request.POST)  # 创建一个 TopicForm 对象，并用 POST 提交的数据填充该对象
-        if form.is_valid():  # 如果表单数据有效，则保存数据
-            #form.save()  # 保存表单数据到数据库
+    if request.method != 'POST':
+        form = TopicForm()
+    else:
+        form = TopicForm(data=request.POST)
+        if form.is_valid():
             new_topic = form.save(commit=False)
             new_topic.owner = request.user
             new_topic.save()
-            return redirect('learning_logs:topics')  # 重定向到 topics 视图
+            return redirect('learning_logs:topics')
 
-    # 显示空表单或指出表单数据无效
-    context = {'form': form}  # 创建一个字典，用于传递给模板
-    return render(request, 'learning_logs/new_topic.html', context)  # 返回一个渲染后的 HTML 页面，该页面显示空表单或指出表单数据无效
-
+    context = {'form': form}
+    return render(request, 'learning_logs/new_topic.html', context)
 
 @login_required
 def new_entry(request, topic_id):
@@ -85,21 +65,17 @@ def new_entry(request, topic_id):
     topic = Topic.objects.get(id=topic_id)
     
     if request.method != 'POST':
-        # 未提交数据：创建一个空表单
         form = EntryForm()
     else:
-        #POST 提交的数据：对数据进行处理
         form = EntryForm(data=request.POST)
         if form.is_valid():
             new_entry = form.save(commit=False)
             new_entry.topic = topic
             new_entry.save()
-            return redirect('learning_logs:topic',topic_id=topic_id)
+            return redirect('learning_logs:topic', topic_id=topic_id)
      
-    #显示空表单或指出表单数据无效
-    context = {'topic':topic,'form':form}
-    return render(request,'learning_logs/new_entry.html',context)
-
+    context = {'topic': topic, 'form': form}
+    return render(request, 'learning_logs/new_entry.html', context)
 
 @login_required
 def edit_entry(request, entry_id):
@@ -110,25 +86,16 @@ def edit_entry(request, entry_id):
         raise Http404
     
     if request.method != 'POST':
-        #初次请求：使用当前的条目填充表单
         form = EntryForm(instance=entry)
     else:
-        #POST 提交的数据：对数据进行处理
-        form = EntryForm(instance=entry,data=request.POST)
+        form = EntryForm(instance=entry, data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect('learning_logs:topic',topic_id=topic.id)
-    context ={'entry':entry,'topic':topic,'form':form}
-    return render(request,'learning_logs/edit_entry.html',context)
+            return redirect('learning_logs:topic', topic_id=topic.id)
+    context = {'entry': entry, 'topic': topic, 'form': form}
+    return render(request, 'learning_logs/edit_entry.html', context)
 
-
-@login_required
-def home(request):
-    todo_items = TodoItem.objects.filter(owner=request.user)
-    return render(request, 'home.html', {'todo_items': todo_items})
-
-
-#待办事项相关
+# 待办事项相关
 @login_required
 def create_todo(request):
     if request.method == 'POST':
@@ -138,11 +105,11 @@ def create_todo(request):
             new_todo.owner = request.user
             new_todo.save()
             return redirect('learning_logs:index')
-
     else:
         form = TodoItemForm()
     return render(request, 'learning_logs/create_todo.html', {'form': form})
 
+@login_required
 def update_todo(request, todo_id):
     todo = TodoItem.objects.get(id=todo_id)
     if request.method == 'POST':
@@ -150,11 +117,11 @@ def update_todo(request, todo_id):
         if form.is_valid():
             form.save()
             return redirect('learning_logs:index')
-
     else:
         form = TodoItemForm(instance=todo)
     return render(request, 'learning_logs/update_todo.html', {'form': form})
 
+@login_required
 def delete_todo(request, todo_id):
     todo = TodoItem.objects.get(id=todo_id)
     todo.delete()
