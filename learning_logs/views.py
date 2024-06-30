@@ -8,7 +8,7 @@ from markdown2 import markdown
 
 def index(request):
     """显示主页"""
-    github_url = "https://github.com/tillywong153111/recordeverything/ras/master/daibanshixiang.md"
+    github_url = "https://raw.githubusercontent.com/tillywong153111/recordeverything/master/daibanshixiang.md"
     response = requests.get(github_url)
     
     if response.status_code == 200:
