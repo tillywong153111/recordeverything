@@ -13,29 +13,30 @@
   </div>
 {% endblock page_header %}
 
-{% comment %}
-{% block content %}  <!-- 创建一个新的 block，名为 content -->
-  <div class="sticky-note">
-    <h2>待办事项</h2>
-    <ul>
-      {% for item in todo_items %}
-        <li>
-          {{ item.content }}
-          <a href="{% url 'learning_logs:update_todo' item.id %}">Update</a>
-          <a href="{% url 'learning_logs:delete_todo' item.id %}">Delete</a>
-        </li>
-      {% endfor %}
-    </ul>
-    <!-- Add a form directly on the page -->
-    <form method="post" action="{% url 'learning_logs:create_todo' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Create</button>
-    </form>
-  </div>
-{% endblock content %}
-{% endcomment %}
-
+{% block content %}
+  {% comment %}
+  <!-- 下面的代码块将被注释掉，不会显示在页面上 -->
+  {% block content %}  <!-- 创建一个新的 block，名为 content -->
+    <div class="sticky-note">
+      <h2>待办事项</h2>
+      <ul>
+        {% for item in todo_items %}
+          <li>
+            {{ item.content }}
+            <a href="{% url 'learning_logs:update_todo' item.id %}">Update</a>
+            <a href="{% url 'learning_logs:delete_todo' item.id %}">Delete</a>
+          </li>
+        {% endfor %}
+      </ul>
+      <!-- Add a form directly on the page -->
+      <form method="post" action="{% url 'learning_logs:create_todo' %}">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit">Create</button>
+      </form>
+    </div>
+  {% endblock content %}
+  {% endcomment %}
 
   <!-- 新增Markdown内容展示区域 -->
   <div class="markdown-content">
