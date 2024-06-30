@@ -1,0 +1,77 @@
+卷 系统 的文件夹 PATH 列表
+卷序列号为 8183-F120
+C:.
+|   .gitignore
+|   .platform.app.yaml
+|   manage.py
+|   requirements.txt
+|   requirements_remote.txt
+|   structure.txt
+|   
++---.platform
+|   |   routes.yaml
+|   |   services.yaml
+|   |   
+|   \---local
+|           .gitignore
+|           project.yaml
+|           README.txt
+|           
++---accounts
+|   |   admin.py
+|   |   apps.py
+|   |   models.py
+|   |   tests.py
+|   |   urls.py
+|   |   views.py
+|   |   __init__.py
+|   |   
+|   +---migrations
+|   |       __init__.py
+|   |       
+|   \---templates
+|       \---registration
+|               login.html
+|               register.html
+|               
++---learning_logs
+|   |   admin.py
+|   |   apps.py
+|   |   forms.py
+|   |   models.py
+|   |   tests.py
+|   |   urls.py
+|   |   views.py
+|   |   __init__.py
+|   |   
+|   +---migrations
+|   |       0001_initial.py
+|   |       0002_entry.py
+|   |       0003_topic_owner.py
+|   |       0004_todoitem.py
+|   |       0005_todoitem_owner.py
+|   |       __init__.py
+|   |       
+|   \---templates
+|       \---learning_logs
+|               base.html
+|               create_todo.html
+|               edit_entry.html
+|               index.html
+|               new_entry.html
+|               new_topic.html
+|               topic.html
+|               topics.html
+|               update_todo.html
+|               
++---ll_project
+|       asgi.py
+|       settings.py
+|       urls.py
+|       wsgi.py
+|       __init__.py
+|       
+\---templates
+        404.html
+        500.html
+        

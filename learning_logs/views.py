@@ -3,6 +3,10 @@ from django.contrib.auth.decorators import login_required
 from .models import Topic, Entry, TodoItem  # 从当前目录的 models.py 文件中导入 Topic 类
 from .forms import TopicForm, EntryForm, TodoItemForm  # 从当前目录的 forms.py 文件中导入 TopicForm 类
 from django.http import Http404
+import requests
+from django.shortcuts import render
+from markdown2 import markdown
+
 
 
 def index(request):
@@ -13,6 +17,23 @@ def index(request):
     else:
         context = {}
     return render(request, 'learning_logs/index.html', context)
+
+
+def home(request):
+    github_url = "https://raw.githubusercontent.com/你的用户名/你的仓库名/main/README.md"  # 这里替换成你的实际GitHub路径
+    response = requests.get(github_url)
+
+    if response.status_code == 200:
+        md_content = response.text
+        html_content = markdown(md_content)
+    else:
+        html_content = "<p>无法加载数据，请稍后再试。</p>"
+
+    context = {
+        'content': html_content
+    }
+    return render(request, 'learning_logs/home.html', context)
+
 
 
 
