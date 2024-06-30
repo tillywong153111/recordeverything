@@ -1,46 +1,8 @@
 {% extends 'learning_logs/base.html' %}
 
-{% block page_header %}
-  <div class="p-3 mb-4 bg-light border rounded-3">
-    <div class="container-fluid py-4">
-      <h1 class="display-3">记录一切</h1>
-      
-      <p class="lead">您可以在这里安全地记录一切。</p>
-
-      <a class="btn btn-primary btn-lg mt-1"
-          href="{% url 'accounts:register' %}">Register &raquo;</a>
-    </div>
-  </div>
-{% endblock page_header %}
-
 {% block content %}
-  {% comment %}
-  <!-- 下面的代码块将被注释掉，不会显示在页面上 -->
-  {% block content %}  <!-- 创建一个新的 block，名为 content -->
-    <div class="sticky-note">
-      <h2>待办事项</h2>
-      <ul>
-        {% for item in todo_items %}
-          <li>
-            {{ item.content }}
-            <a href="{% url 'learning_logs:update_todo' item.id %}">Update</a>
-            <a href="{% url 'learning_logs:delete_todo' item.id %}">Delete</a>
-          </li>
-        {% endfor %}
-      </ul>
-      <!-- Add a form directly on the page -->
-      <form method="post" action="{% url 'learning_logs:create_todo' %}">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <button type="submit">Create</button>
-      </form>
-    </div>
-  {% endblock content %}
-  {% endcomment %}
-
   <!-- 新增Markdown内容展示区域 -->
   <div class="markdown-content">
     {{ content|safe }}
   </div>
-
 {% endblock content %}
