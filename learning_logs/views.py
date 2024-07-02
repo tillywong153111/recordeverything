@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import render, redirect 
 from django.contrib.auth.decorators import login_required
 from .models import Topic, Entry, TodoItem 
@@ -13,6 +14,8 @@ def index(request):
     
     if response.status_code == 200:
         md_content = response.text
+        # 去除 '- [] '
+        md_content = re.sub(r'- \[\]', '', md_content)
         html_content = markdown(md_content)
     else:
         html_content = "<p>无法加载数据，请稍后再试。</p>"
@@ -73,7 +76,7 @@ def new_entry(request, topic_id):
             new_entry.topic = topic
             new_entry.save()
             return redirect('learning_logs:topic', topic_id=topic_id)
-     
+    
     context = {'topic': topic, 'form': form}
     return render(request, 'learning_logs/new_entry.html', context)
 
