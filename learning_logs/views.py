@@ -19,11 +19,11 @@ def index(request):
             if re.match(r'- \[\] .*', line):
                 return line  # 保留 `- []` 后有内容的行
             elif re.match(r'- \[\]', line):
-                return ''  # 去除 `- []` 后无内容的行
+                return None  # 去除 `- []` 后无内容的行
             return line
 
         md_lines = md_content.splitlines()
-        cleaned_md_lines = [clean_md_line(line) for line in md_lines]
+        cleaned_md_lines = [line for line in map(clean_md_line, md_lines) if line is not None]
         cleaned_md_content = '\n'.join(cleaned_md_lines)
         
         html_content = markdown(cleaned_md_content)
