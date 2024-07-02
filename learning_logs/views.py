@@ -14,8 +14,9 @@ def index(request):
     
     if response.status_code == 200:
         md_content = response.text
-        # 去除 '- [] '
-        md_content = re.sub(r'- \[\]', '', md_content)
+        # 去除 '- [] ' 并保持换行
+        md_content = re.sub(r'- \[\] ', '', md_content)
+        md_content = md_content.replace('- [ ]', '').strip()
         html_content = markdown(md_content)
     else:
         html_content = "<p>无法加载数据，请稍后再试。</p>"
