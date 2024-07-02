@@ -21,6 +21,15 @@ def index(request):
             elif re.match(r'- \[\]', line):
                 return None  # 去除 `- []` 后无内容的行
             return line
+        
+        def clean_md_line(line):
+            # 检查`- []`后面是否有内容
+            if re.match(r'- \[\] .+', line):
+                return line  # 如果`- []`后面有内容，则保留该行
+            elif re.match(r'- \[\]\s*$', line):
+                return None  # 如果`- []`后面没有内容（仅有空白字符或没有字符），则不保留该行
+            return line
+
 
         md_lines = md_content.splitlines()
         cleaned_md_lines = [line for line in map(clean_md_line, md_lines) if line is not None]
