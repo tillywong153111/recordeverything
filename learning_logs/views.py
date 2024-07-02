@@ -14,10 +14,19 @@ def index(request):
     
     if response.status_code == 200:
         md_content = response.text
-        # 去除 '- [] ' 并保持换行
-        md_content = re.sub(r'- \[\] ', '', md_content)
-        md_content = md_content.replace('- [ ]', '').strip()
-        html_content = markdown(md_content)
+        # 保留 `- []` 后有内容的行，去除 `- []` 后无内容的行
+        def clean_md_line(line):
+            if re.match(r'- \[\] .*', line):
+                return line  # 保留 `- []` 后有内容的行
+            elif re.match(r'- \[\]', line):
+                return ''  # 去除 `- []` 后无内容的行
+            return line
+
+        md_lines = md_content.splitlines()
+        cleaned_md_lines = [clean_md_line(line) for line in md_lines]
+        cleaned_md_content = '\n'.join(cleaned_md_lines)
+        
+        html_content = markdown(cleaned_md_content)
     else:
         html_content = "<p>无法加载数据，请稍后再试。</p>"
     
