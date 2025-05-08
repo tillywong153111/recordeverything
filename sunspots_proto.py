@@ -18,3 +18,7 @@ data = [
     (10, 240, 5, 2),
     (11, 240, 5, 2),   
 ]
+
+drawing = Drawing(200, 150)
+
+pred = [row[2]-40 for row in data]
